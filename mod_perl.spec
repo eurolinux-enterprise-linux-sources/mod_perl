@@ -2,7 +2,7 @@
 
 Name:           mod_perl
 Version:        2.0.4
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        An embedded Perl interpreter for the Apache HTTP Server
 
 Group:          System Environment/Daemons
@@ -15,6 +15,7 @@ Source3:        filter-provides.sh
 Patch0:         mod_perl-2.0.4-multilib.patch
 Patch1:         mod_perl-2.0.4-inline.patch
 Patch2:         mod_perl-2.0.4-CVE-2009-0796.patch
+Patch3:         mod_perl-2.0.4-tipool-race.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  perl-devel, perl(ExtUtils::Embed)
@@ -53,6 +54,7 @@ modules that use mod_perl.
 %patch0 -p1
 %patch1 -p1 -b .inline
 %patch2 -p1
+%patch3 -p1 -b .tipool
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fpic" %{__perl} Makefile.PL </dev/null \
@@ -131,6 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/httpd/*
 
 %changelog
+* Wed Apr 16 2014 Jan Kaluza <jkaluza@redhat.com> - 2.0.4-11
+- fix a race condition in tipool management (#1072766)
+
 * Tue Dec  8 2009 Joe Orton <jorton@redhat.com> - 2.0.4-10
 - add security fix for CVE-2009-0796 (#544455)
 

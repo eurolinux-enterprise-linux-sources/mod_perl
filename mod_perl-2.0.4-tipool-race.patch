@@ -1,0 +1,13 @@
+--- a/src/modules/perl/modperl_tipool.c	2012/03/11 19:09:20	1299428
++++ b/src/modules/perl/modperl_tipool.c	2012/03/11 19:09:47	1299429
+@@ -328,9 +328,9 @@
+     MP_TRACE_i(MP_FUNC, "0x%lx now available (%d in use, %d running)",
+                (unsigned long)listp->data, tipool->in_use, tipool->size);
+ 
++    modperl_tipool_broadcast(tipool);
+     if (tipool->in_use == (tipool->cfg->max - 1)) {
+         /* hurry up, another thread may be blocking */
+-        modperl_tipool_broadcast(tipool);
+         modperl_tipool_unlock(tipool);
+         return;
+     }
