@@ -2,7 +2,7 @@
 
 Name:           mod_perl
 Version:        2.0.4
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        An embedded Perl interpreter for the Apache HTTP Server
 
 Group:          System Environment/Daemons
@@ -16,6 +16,9 @@ Patch0:         mod_perl-2.0.4-multilib.patch
 Patch1:         mod_perl-2.0.4-inline.patch
 Patch2:         mod_perl-2.0.4-CVE-2009-0796.patch
 Patch3:         mod_perl-2.0.4-tipool-race.patch
+# Fix CVE-2011-2767 (arbitrary Perl code execution in the context of the user
+# account via a user-owned .htaccess), bug #1626272, CPAN RT#126984
+Patch4:         mod_perl-2.0.10-restrict_perl_section_to_server_scope.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  perl-devel, perl(ExtUtils::Embed)
@@ -55,6 +58,7 @@ modules that use mod_perl.
 %patch1 -p1 -b .inline
 %patch2 -p1
 %patch3 -p1 -b .tipool
+%patch4 -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fpic" %{__perl} Makefile.PL </dev/null \
@@ -133,6 +137,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/httpd/*
 
 %changelog
+* Wed Aug 29 2018 Petr Pisar <ppisar@redhat.com> - 2.0.4-12
+- Fix CVE-2011-2767 (arbitrary Perl code execution in the context of the user
+  account via a user-owned .htaccess) (bug #1626272)
+
 * Wed Apr 16 2014 Jan Kaluza <jkaluza@redhat.com> - 2.0.4-11
 - fix a race condition in tipool management (#1072766)
 
